@@ -10,8 +10,8 @@ let audio = new Audio('/sounds/click.mp3');
 
 class Calculator extends React.Component {
     state = {
-        currentValue: 0,
-        formula: 0,
+        currentValue: '0',
+        formula: '0',
         result: undefined,
         prevValue: undefined // after clicked '=' and after clicked any number should be that clicked number
     }
@@ -23,12 +23,11 @@ class Calculator extends React.Component {
         if (prevValue === 'result') {
             this.setState({
                 currentValue: value,
-                formula: formula + value,
+                formula: value,
                 result: undefined,
                 prevValue: undefined
             })
-        }
-        if (currentValue === 0) {
+        } else if (currentValue === 0) {
             if (value === '0') {
                 this.setState({
                     currentValue: 0,
@@ -68,7 +67,8 @@ class Calculator extends React.Component {
                     this.setState({
                         currentValue: value,
                         formula: result + value,
-                        result: undefined // restore 'result' to undefined - to start formula without '='
+                        result: undefined, // restore 'result' to undefined - to start formula without '='
+                        prevValue: undefined
                     })
                 } else {
                     this.setState({
@@ -87,7 +87,7 @@ class Calculator extends React.Component {
             currentValue: 0,
             formula: 0
         })
-        console.log(this.state.currentValue + '  formula -> ' + this.state.formula)
+        console.log("handleClear: " + this.state.currentValue + '  formula -> ' + this.state.formula)
         audio.play();
     }
 
@@ -102,8 +102,17 @@ class Calculator extends React.Component {
         audio.play();
     }
 
-    handleDecimal = () => {
-        console.log('click .')
+    handleDecimal = (e) => {
+        const [value] = e.target.value;
+        const { currentValue, formula, result } = this.state;
+
+        if (!currentValue.includes(value)) {
+            this.setState({
+                formula: formula + value,
+                currentValue: currentValue + value
+            })
+            console.log('handleDecimal: currentValue=' + currentValue)
+        }
     }
 
     render() {
