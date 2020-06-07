@@ -27,7 +27,7 @@ class Calculator extends React.Component {
                 result: undefined,
                 prevValue: undefined
             })
-        } else if (currentValue === 0) {
+        } else if (currentValue === '0' || currentValue === 0) {
             if (value === '0') {
                 this.setState({
                     currentValue: 0,
@@ -41,7 +41,7 @@ class Calculator extends React.Component {
                 })
             }
         } else {
-            console.log('handleNumbers: \nformula: ' + formula + '\ncurrentvalue: ' + currentValue + '\nresult: ' + result + '\nprevValue: ' + prevValue)
+            console.log('handleNumbers (not result, not 0): \nformula: ' + formula + '\ncurrentvalue: ' + currentValue + '\nresult: ' + result + '\nprevValue: ' + prevValue)
             this.setState({
                 currentValue: currentValue + value,
                 formula: formula + value
@@ -92,14 +92,17 @@ class Calculator extends React.Component {
     }
 
     handleEqual = () => {
-        this.setState({
-            formula: this.state.formula + '=' + eval(this.state.formula),
-            currentValue: eval(this.state.formula),
-            result: eval(this.state.formula),
-            prevValue: 'result'
-        })
-
-        audio.play();
+        if (this.state.currentValue !== 0 && this.state.currentValue !== '0') {
+            if (!this.state.formula.includes('=')) {
+                this.setState({
+                    formula: this.state.formula + '=' + eval(this.state.formula),
+                    currentValue: eval(this.state.formula),
+                    result: eval(this.state.formula),
+                    prevValue: 'result'
+                })
+                audio.play();
+            }
+        }
     }
 
     handleDecimal = (e) => {
